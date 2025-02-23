@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: amunity-ingress
+  namespace: amunity
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - amunity.app
+    secretName: amunity-tls
+  rules:
+  - host: amunity.app
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: amunity-service
+            port:
+              number: 80
